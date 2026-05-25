@@ -2,6 +2,7 @@
 ## Basic Idea 
 TPU's are the backbone of the recent AI breakthroughs and as a hardware technology seem to be less complex and more optimized than modern cpu's. 
 All of these led to the decision of creating a tpu based on verilog as a personal project, to enhance the understanding of TPUS and AI and develop skills, specifically learning to create VLSI's with verilog. 
+
 <img width="474" height="474" alt="image" src="https://github.com/user-attachments/assets/5b7f6cf7-2493-4a49-885d-6b2639960385" />
 ## Project Outline 
 Since the creator of this repository is a complete beginner in all of these things it is better to break the process into smaller steps and targets before pushing through the creation of a complex general system.
