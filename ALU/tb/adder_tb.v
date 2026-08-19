@@ -11,7 +11,11 @@ module adder_tb;
 
   integer i, j;
   integer errors = 0;
-  reg [BIT_LENGTH-1:0] expected;
+
+  reg [BIT_LENGTH-1:0] exp_sum;
+  reg exp_cout;
+  reg exp_ovf;
+  reg exp_zero;
 
   adder #(
       .BIT_LENGTH(BIT_LENGTH)
@@ -28,60 +32,49 @@ module adder_tb;
   initial begin
     for (i = 0; i < (1 << BIT_LENGTH); i = i + 1) begin
       for (j = 0; j < (1 << BIT_LENGTH); j = j + 1) begin
+
+        // --- ADDITION TESTS ---
         x = i;
         y = j;
         subtract = 0;
-        #1;  // let the combinational logic settle before checking
+        #1;  // let combinational logic settle
 
-        expected = x + y;  // BIT_LENGTH+1 wide, so overflow lands in bit[BIT_LENGTH]
-        // Addition Check
-        subtract = 0;
-        #1;
-        expected_sum  = x + y;
-        expected_cout = (x + y) >> BIT_LENGTH;
-        expected_ovf  = (x[7] == y[7]) && (sum[7] != x[7]);
+        exp_sum = x + y;
+        exp_cout = ((x + y) >= (1 << BIT_LENGTH));
+        exp_ovf  = (x[BIT_LENGTH-1] == y[BIT_LENGTH-1]) && 
+                   (exp_sum[BIT_LENGTH-1] != x[BIT_LENGTH-1]);
+        exp_zero = (exp_sum == 0);
 
-        if (sum !== expected_sum || cout !== expected_cout || overflow !== expected_ovf) begin
+        if (sum !== exp_sum || cout !== exp_cout || overflow !== exp_ovf || is_zero !== exp_zero) begin
           errors = errors + 1;
-          $display("ADD FAIL: x=%0d y=%0d -> sum=%0d cout=%0b ovf=%0b", x, y, sum, cout, overflow);
+          $display(
+              "ADD FAIL: x=%0d y=%0d | sum=%0d (exp %0d), cout=%0b (exp %0b), ovf=%0b (exp %0b), zero=%0b (exp %0b)",
+              x, y, sum, exp_sum, cout, exp_cout, overflow, exp_ovf, is_zero, exp_zero);
         end
 
-        if (is_zero !== (sum == 0)) begin
-          errors = errors + 1;
-          $display("IS_ZERO FAIL: sum=%0d is_zero=%0b", sum, is_zero);
-        end
-        if (sum !== expected) begin
-          errors = errors + 1;
-          $display("FAIL: x=%0d y=%0d -> sum=%0d cout=%0b (expected sum=%0d cout=%0b)", x, y, sum,
-                   cout, expected[BIT_LENGTH-1:0], expected[BIT_LENGTH]);
-        end
-        if ((expected == 0 && is_zero == 1) || (expected != 0 && is_zero == 0));
-        else begin
-          errors = errors + 1;
-          $display("FAIL!IS ZERO ERROR!CASE x=%0d, y=%0d, sum=%0d, exp=%0d, is_zero=%0d", x, y,
-                   sum, expected, is_zero);
-        end
+        // --- SUBTRACTION TESTS ---
         x = i;
         y = j;
         subtract = 1;
-        #1;  // let the combinational logic settle before checking
+        #1;  // let combinational logic settle
 
-        expected = x - y;  // BIT_LENGTH+1 wide, so overflow lands in bit[BIT_LENGTH
-        if (sum !== expected) begin
+        exp_sum = x - y;
+        exp_cout = (x >= y);  // 2's complement cout is 1 (no borrow) when x >= y
+        exp_ovf  = (x[BIT_LENGTH-1] != y[BIT_LENGTH-1]) && 
+                   (exp_sum[BIT_LENGTH-1] != x[BIT_LENGTH-1]);
+        exp_zero = (exp_sum == 0);
+
+        if (sum !== exp_sum || cout !== exp_cout || overflow !== exp_ovf || is_zero !== exp_zero) begin
           errors = errors + 1;
-          $display("FAIL: x=%0d y=%0d -> sum=%0d cout=%0b (expected sum=%0d cout=%0b)", x, y, sum,
-                   cout, expected[BIT_LENGTH-1:0], expected[BIT_LENGTH]);
+          $display(
+              "SUB FAIL: x=%0d y=%0d | sum=%0d (exp %0d), cout=%0b (exp %0b), ovf=%0b (exp %0b), zero=%0b (exp %0b)",
+              x, y, sum, exp_sum, cout, exp_cout, overflow, exp_ovf, is_zero, exp_zero);
         end
-        if ((expected == 0 && is_zero == 1) || (expected != 0 && is_zero == 0));
-        else begin
-          errors = errors + 1;
-          $display("FAIL!IS ZERO ERROR!CASE x=%0d, y=%0d, sum=%0d, exp=%0d, is_zero=%0d", x, y,
-                   sum, expected, is_zero);
-        end
+
       end
     end
 
-    if (errors == 0) $display("ALL %0d TESTS PASSED", (1 << BIT_LENGTH) * (1 << BIT_LENGTH));
+    if (errors == 0) $display("ALL %0d TESTS PASSED", (1 << BIT_LENGTH) * (1 << BIT_LENGTH) * 2);
     else $display("%0d TEST(S) FAILED", errors);
 
     $finish;
