@@ -14,4 +14,5 @@ module adder #(
   assign overflow = (x[BIT_LENGTH-1] == y_mod[BIT_LENGTH-1]) &&
                    (sum[BIT_LENGTH-1] != x[BIT_LENGTH-1]);
   assign is_zero = (sum == 0);
+
 endmodule
