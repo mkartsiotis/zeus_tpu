@@ -77,3 +77,23 @@ Main target for the coming days is building a single cycle basic system, then ru
 >> Pending: ALU simulation with the synthesized system and benchmark grading.  
 
  ![Synthesized ALU mmdule](https://github.com/mkartsiotis/zeus_tpu/blob/main/ALU/synth/AluFull.png)
+
+| Metric | Value | Details / Notes |
+| :--- | :--- | :--- |
+| **Target FPGA** | Lattice iCE40-HX8K (`ct256`) | Synthesized via Yosys & nextpnr |
+| **Total Propagation Delay** | **`18.84 ns`** | Maximum combinational input-to-output latency |
+| **Max Frequency ($f_{MAX}$)** | **`53.08 MHz`** | Theoretical combinational clock limit ($\frac{1000}{18.84\text{ ns}}$) |
+| **Logic Cell Utilization (LCs)** | **`529 / 7,680` (`6%`)** | 4-input LUT4s used across all submodules |
+| **I/O Pin Usage** | **`103 / 256` (`40%`)** | 32-bit operands `x`, `y`, `result`, `opcode`, and status flags |
+| **Logic Delay** | **`3.55 ns` (`18.8%`)** | Gate-level switching time |
+| **Routing Delay** | **`15.29 ns` (`81.2%`)** | Interconnect routing wire latency across silicon |
+| **Critical Path** | `x[5]` $\rightarrow$ `zero` flag | Output zero check bottlenecks on full result computation |
+
+**Critical Path Timing Breakdown**
+
+| Stage | Increment Delay | Total Elapsed | Component |
+| :--- | :--- | :--- | :--- |
+| **Source** | `0.00 ns` | `0.00 ns` | Input Pin `x[5]` (`$sb_io.D_IN_0`) |
+| **Logic Processing** | `3.55 ns` | `3.55 ns` | Carry chains, shifter MUXes, logic gates, zero comparator |
+| **Interconnect Routing** | `15.29 ns` | `18.84 ns` | Die wire routing across FPGA grid |
+| **Sink** | `—` | `18.84 ns` | Output Pin `zero` (`$sb_io.D_OUT_0`) |
