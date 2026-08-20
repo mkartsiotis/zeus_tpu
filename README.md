@@ -51,3 +51,26 @@ I am also working on discreet simulations for every part of the CPU that I am bu
 
 Just completed the basic ALU modules and now focusing on the wrapper as well as the register file.  
 Main target for the coming days is building a single cycle basic system, then run tests and verifications on that before scaling and optimizing to a 5 stage pipeline with custom propagation units etc...
+
+## ALU design choices and OPCODES
+
+| Opcode (`3:0`) | Operation | Name | Description |
+| --- | --- | --- | --- |
+| `0000` | `ADD` | Addition | Adds `x` and `y`<br> |
+| `0001` | `SUB` | Subtraction | Subtracts `y` from `x`<br> |
+| `0010` | `AND` | Bitwise AND | Performs `x & y`<br> |
+| `0011` | `SLT` | Set Less Than | Signed comparison: returns `1` if `x < y`, else `0`<br> |
+| `0100` | `OR` | Bitwise OR | Performs `x | y`<br> |
+| `0101` | `XOR` | Bitwise XOR | Performs `x ^ y`<br> |
+| `0110` | `NOR` | Bitwise NOR | Performs `~(x | y)`<br> |
+| `0111` | `SLTU` | Set Less Than Unsigned | Unsigned comparison: returns `1` if `x < y`, else `0`<br> |
+| `1000` | `SLL` | Shift Left Logical | Logical left shift of `x` by shift amount `y`<br> |
+| `1001` | `SRL` | Shift Right Logical | Logical right shift of `x` by shift amount `y`<br> |
+
+### ALU Design choices
+
+A common adder/subtractor was used so as to use the least amount of gates possible. Adding and subtracting is done with 2's compliment. Overflow and cout signals are also used and outputed by the ALU for possible future use.  
+For all the other modules the operations are happening all at once and then with multiplexers the output is filtered to the output asked by the ALU op.  
+The ALU operations that were chosen are the above(see table with opcodes). No not is used since this is done by nor(the assembler will later construct not as a pseudo-instruction). So the bitwise operations are more than enough for the usecase of running simple programs and testing.  
+Multiplication and division will be done by different modules that will work in parallel with the ALU in the future.  
+For shift operations only a small portion of the second inputs is used as it is the case with most RISC processors.  
