@@ -4,9 +4,8 @@ module shifter_tb;
   parameter BIT_LENGTH = 8;
 
   reg [BIT_LENGTH-1:0] x;
-  reg [$clog2(BIT_LENGTH):0] shamt;
-  reg shift_right;
-  wire [BIT_LENGTH-1:0] result;
+  reg [($clog2(BIT_LENGTH) - 1):0] shamt;
+  wire [BIT_LENGTH-1:0] result_l, result_r;
 
   integer i, l;
   integer errors = 0;
@@ -18,23 +17,19 @@ module shifter_tb;
   ) dut (
       .x(x),
       .shamt(shamt),
-      .shift_right(shift_right),
-      .result(result)
+      .result_l(result_l),
+      .result_r(result_r)
   );
 
   initial begin
     for (i = 0; i < (1 << BIT_LENGTH); i = i + 1) begin
-      for (l = 0; l < (1 << $clog2(BIT_LENGTH)); l = l + 1) begin
+      for (l = 0; l < (1 << ($clog2(BIT_LENGTH) - 1)); l = l + 1) begin
         // --- TESTS ---
         x = i;
         shamt = l;
-        shift_right = 0;
-        #1;  // let combinational logic settle
-        true_l = result;
         #1;
-        shift_right = 1;
-        #1;
-        true_r = result;
+        true_l = result_l;
+        true_r = result_r;
         expected_l = x << shamt;
         expected_r = x >> shamt;
         if (expected_l !== true_l || expected_r !== true_r) begin

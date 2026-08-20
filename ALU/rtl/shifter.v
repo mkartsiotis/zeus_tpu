@@ -2,11 +2,10 @@ module shifter #(
     parameter BIT_LENGTH = 8
 ) (
     input [BIT_LENGTH-1:0] x,
-    input [$clog2(BIT_LENGTH):0] shamt,
-    input shift_right,
-    output reg [BIT_LENGTH-1:0] result
+    input [($clog2(BIT_LENGTH) -1):0] shamt,
+    output [BIT_LENGTH-1:0] result_r,
+    result_l
 );
-  always @(*)
-    if (shift_right == 1) result = x >> shamt;
-    else result = x << shamt;
+  assign result_l = x << shamt;
+  assign result_r = x >> shamt;
 endmodule
