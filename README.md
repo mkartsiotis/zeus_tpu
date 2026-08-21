@@ -134,8 +134,8 @@ Main target for the coming days is building a single cycle basic system, then ru
 
 ### Why RISC-V over MIPS?  
 
--> Future TPU Integration: The RV32I specification explicitly reserves dedicated opcode space (custom-0 through custom-3) for custom instruction extensions. This provides a clean interface for adding matrix-multiplication and vector acceleration units (TPU) without altering standard decoder behavior.  
+- Future TPU Integration: The RV32I specification explicitly reserves dedicated opcode space (custom-0 through custom-3) for custom instruction extensions. This provides a clean interface for adding matrix-multiplication and vector acceleration units (TPU) without altering standard decoder behavior.  
 
--> Standard Register Alignment: Fixed bit fields for source (rs1, rs2) and destination (rd) registers allow register file read operations to occur in parallel with instruction decoding.  
+- Standard Register Alignment: Fixed bit fields for source (rs1, rs2) and destination (rd) registers allow register file read operations to occur in parallel with instruction decoding.  
 
--> Modern Ecosystem: Aligns with current industry standards for open-source hardware accelerators.  
+- Modern Ecosystem: Aligns with current industry standards for open-source hardware accelerators.  
