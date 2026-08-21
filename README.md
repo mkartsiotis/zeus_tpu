@@ -106,7 +106,7 @@ Main target for the coming days is building a single cycle basic system, then ru
 2. There actually no physical $0 register! This is done so as to minimize gate usage so $0 it is actually hardwired to the ground.  
 3. There is no read enabled and the read logic is completely combinational and thus unrelated to the clock. Write logic is however positively edge triggered in relation to the clock.  
 
->> Place and routing simulations are conducted with the yosys-nextpnr toolchain  
+> Place and routing simulations are conducted with the yosys-nextpnr toolchain  
 
 | Metric | Value | Details / Notes |
 | :--- | :--- | :--- |
@@ -128,5 +128,5 @@ Main target for the coming days is building a single cycle basic system, then ru
 | **Interconnect Routing** | `11.31 ns` | `13.07 ns` | Interconnect routing across 992 register flip-flops |
 | **Sink** | `—` | `13.07 ns` | Output Pin `reg1_data[15]` (`$sb_io.D_OUT_0`) |
 
->> Note: Actually discovered the limit of the yosys renderer so no physical image of the system could be made!(Render crashes)
+> Note: Actually discovered the limit of the yosys renderer so no physical image of the system could be made!(Render crashes)
 Next up: Memory and WB!
