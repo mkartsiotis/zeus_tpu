@@ -74,7 +74,7 @@ Main target for the coming days is building a single cycle basic system, then ru
 3. The ALU operations that were chosen are the above(see table with opcodes). No not is used since this is done by nor(the assembler will later construct not as a pseudo-instruction). So the bitwise operations are more than enough for the usecase of running simple programs and testing.  
 4. Multiplication and division will be done by different modules that will work in parallel with the ALU in the future.  
 5. For shift operations only a small portion of the second inputs is used as it is the case with most RISC processors.  
->> Pending: ALU simulation with the synthesized system and benchmark grading.  
+> Pending: ALU simulation with the synthesized system and benchmark grading.  
 
  ![Synthesized ALU mmdule](https://github.com/mkartsiotis/zeus_tpu/blob/main/ALU/synth/AluFull.png)
 
