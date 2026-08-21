@@ -139,3 +139,4 @@ Main target for the coming days is building a single cycle basic system, then ru
 - Standard Register Alignment: Fixed bit fields for source (rs1, rs2) and destination (rd) registers allow register file read operations to occur in parallel with instruction decoding.  
 
 - Modern Ecosystem: Aligns with current industry standards for open-source hardware accelerators.  
+**For all the above reasons the RISC-V ISA will be used for the project**  
