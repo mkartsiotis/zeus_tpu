@@ -128,5 +128,14 @@ Main target for the coming days is building a single cycle basic system, then ru
 | **Interconnect Routing** | `11.31 ns` | `13.07 ns` | Interconnect routing across 992 register flip-flops |
 | **Sink** | `—` | `13.07 ns` | Output Pin `reg1_data[15]` (`$sb_io.D_OUT_0`) |
 
-> Note: Actually discovered the limit of the yosys renderer so no physical image of the system could be made!(Render crashes)
-Next up: Memory and WB!
+> Note: Actually discovered the limit of the yosys renderer so no physical image of the system could be made!(Render crashes)  
+
+## ISA and more design decisions  
+
+### Why RISC-V over MIPS?  
+
+-> Future TPU Integration: The RV32I specification explicitly reserves dedicated opcode space (custom-0 through custom-3) for custom instruction extensions. This provides a clean interface for adding matrix-multiplication and vector acceleration units (TPU) without altering standard decoder behavior.  
+
+-> Standard Register Alignment: Fixed bit fields for source (rs1, rs2) and destination (rd) registers allow register file read operations to occur in parallel with instruction decoding.  
+
+-> Modern Ecosystem: Aligns with current industry standards for open-source hardware accelerators.  
