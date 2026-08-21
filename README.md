@@ -97,3 +97,35 @@ Main target for the coming days is building a single cycle basic system, then ru
 | **Logic Processing** | `3.55 ns` | `3.55 ns` | Carry chains, shifter MUXes, logic gates, zero comparator |
 | **Interconnect Routing** | `15.29 ns` | `18.84 ns` | Die wire routing across FPGA grid |
 | **Sink** | `—` | `18.84 ns` | Output Pin `zero` (`$sb_io.D_OUT_0`) |
+
+## REGISTER FILE  
+
+### Design Choices  
+
+1. The register file consists of 32 registers each capable of holding 32 bits. This design choice is not optimal for an ML/GPU architecture but the register file is written so to be modular so it can be repurposed in future architectures.  
+2. There actually no physical $0 register! This is done so as to minimize gate usage so $0 it is actually hardwired to the ground.  
+3. There is no read enabled and the read logic is completely combinational and thus unrelated to the clock. Write logic is however positively edge triggered in relation to the clock.  
+
+>> Place and routing simulations are conducted with the yosys-nextpnr toolchain
+| Metric | Value | Details / Notes |
+| :--- | :--- | :--- |
+| **Target FPGA** | Lattice iCE40-HX8K (`ct256`) | Synthesized via Yosys & nextpnr |
+| **Logic Cell Utilization (LCs)** | **`2,868 / 7,680` (`37%`)** | 992 Flip-Flops + 1,874 MUX/decoder LUT4s |
+| **Block RAM (BRAM) Usage** | **`0 / 32` (`0%`)** | Synthesized as Distributed RAM (Flip-Flops) |
+| **I/O Pin Usage** | **`113 / 256` (`44%`)** | 2x Read Ports, 1x Write Port, Select lines, Clock |
+| **Global Buffers (SB_GB)** | **`5 / 8` (`62%`)** | Clock and Write-Enable lines mapped to low-skew global trees |
+| **Max Async Read Delay** | **`13.07 ns`** | Direct MUX read latency (`reg1_sel` $\rightarrow$ `reg1_data`) |
+| **Clock-to-Output Latency** | **`9.29 ns`** | Clock edge to valid read data (`clk` $\rightarrow$ `reg2_data`) |
+| **Write Enable Setup Path** | **`8.66 ns`** | Write address decode to register clock-enable setup |
+
+**Critical Path Timing Breakdown (Async Read MUX Path)**
+
+| Stage | Increment Delay | Total Elapsed | Component |
+| :--- | :--- | :--- | :--- |
+| **Source** | `0.00 ns` | `0.00 ns` | Input Pin `reg1_sel[1]` (`$sb_io.D_IN_0`) |
+| **Logic Processing** | `1.76 ns` | `1.76 ns` | 32-to-1 Read MUXing logic layers |
+| **Interconnect Routing** | `11.31 ns` | `13.07 ns` | Interconnect routing across 992 register flip-flops |
+| **Sink** | `—` | `13.07 ns` | Output Pin `reg1_data[15]` (`$sb_io.D_OUT_0`) |
+
+>> Note: Actually discovered the limit of the yosys renderer so no physical image of the system could be made!(Render crashes)
+Next up: Memory and WB!
