@@ -140,3 +140,24 @@ Main target for the coming days is building a single cycle basic system, then ru
 
 - Modern Ecosystem: Aligns with current industry standards for open-source hardware accelerators.  
 **For all the above reasons the RISC-V ISA will be used for the project**  
+
+## Designing the Sign Extension module for immediate instructions  
+
+### Canonical Base RV32I Subset
+
+| Instruction | Type | Opcode (`[6:0]`) | Funct3 (`[14:12]`) | Funct7 (`[31:25]`) | Operation |
+| --- | --- | --- | --- | --- | --- |
+| `add` | R | `0110011` (`0x33`) | `000` | `0000000` | `rd = rs1 + rs2` |
+| `sub` | R | `0110011` (`0x33`) | `000` | `0100000` | `rd = rs1 - rs2` |
+| `and` | R | `0110011` (`0x33`) | `111` | `0000000` | `rd = rs1 & rs2` |
+| `or` | R | `0110011` (`0x33`) | `110` | `0000000` | `rd = rs1 | rs2` |
+| `xor` | R | `0110011` (`0x33`) | `100` | `0000000` | `rd = rs1 ^ rs2` |
+| `slt` | R | `0110011` (`0x33`) | `010` | `0000000` | `rd = (rs1 < rs2) ? 1 : 0` (Signed) |
+| `sltu` | R | `0110011` (`0x33`) | `011` | `0000000` | `rd = (rs1 < rs2) ? 1 : 0` (Unsigned) |
+| `sll` | R | `0110011` (`0x33`) | `001` | `0000000` | `rd = rs1 << rs2[4:0]` |
+| `srl` | R | `0110011` (`0x33`) | `101` | `0000000` | `rd = rs1 >> rs2[4:0]` |
+| `addi` | I | `0010011` (`0x13`) | `000` | N/A | `rd = rs1 + SignExt(imm)` |
+| `lw` | I | `0000011` (`0x03`) | `010` | N/A | `rd = Mem[rs1 + SignExt(imm)]` |
+| `sw` | S | `0100011` (`0x23`) | `010` | N/A | `Mem[rs1 + SignExt(imm)] = rs2` |
+| `beq` | B | `1100011` (`0x63`) | `000` | N/A | `if (rs1 == rs2) PC = PC + SignExt(imm)` |
+| `jal` | J | `1101111` (`0x6F`) | N/A | N/A | `rd = PC + 4; PC = PC + SignExt(imm)` |
