@@ -143,6 +143,8 @@ Main target for the coming days is building a single cycle basic system, then ru
 
 ## Designing the Sign Extension module for immediate instructions  
 
+For reference this is the RISC-V RV32I subset that is going to be used as the main ISA.  
+
 ### Canonical Base RV32I Subset
 
 | Instruction | Type | Opcode (`[6:0]`) | Funct3 (`[14:12]`) | Funct7 (`[31:25]`) | Operation |
@@ -161,3 +163,15 @@ Main target for the coming days is building a single cycle basic system, then ru
 | `sw` | S | `0100011` (`0x23`) | `010` | N/A | `Mem[rs1 + SignExt(imm)] = rs2` |
 | `beq` | B | `1100011` (`0x63`) | `000` | N/A | `if (rs1 == rs2) PC = PC + SignExt(imm)` |
 | `jal` | J | `1101111` (`0x6F`) | N/A | N/A | `rd = PC + 4; PC = PC + SignExt(imm)` |
+
+**So based on the type of the instruction (with a simple case statement in Verilog for the opcode) we are going to sign extend the specific field and produce as output a 32bit number**  
+Here are the opcodes for the main instructions of the subset:  
+
+| Instruction | Format | Opcode (`inst[6:0]`) |
+| --- | --- | --- |
+| add, sub, and, or, xor, slt, sltu, **sll, srl** | R | `0110011` |
+| addi | I | `0010011` |
+| lw | I | `0000011` |
+| sw | S | `0100011` |
+| beq | B | `1100011` |
+| jal | J | `1101111` |
