@@ -175,3 +175,17 @@ Here are the opcodes for the main instructions of the subset:
 | sw | S | `0100011` |
 | beq | B | `1100011` |
 | jal | J | `1101111` |
+
+## Creating the control unit
+
+### Main output signals of the control unit
+
+| Signal | Purpose |
+| --- | --- |
+| `RegWrite` | Does this instruction write a result back to `rd`? |
+| `ALUSrc` | ALU's 2nd operand: register (`rs2`) or immediate? |
+| `MemRead` | Is this a load? |
+| `MemWrite` | Is this a store? |
+| `ResultSrc` | Write-back value comes from: ALU result, memory data, or `PC+4` (for `jal`)? |
+| `Branch` | Is this a conditional branch (feeds PC-update logic)? |
+| `Jump` | Is this `jal` (unconditional PC change)? |
