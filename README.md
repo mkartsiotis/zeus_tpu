@@ -180,12 +180,16 @@ Here are the opcodes for the main instructions of the subset:
 
 ### Main output signals of the control unit
 
-| Signal | Purpose |
-| --- | --- |
-| `RegWrite` | Does this instruction write a result back to `rd`? |
-| `ALUSrc` | ALU's 2nd operand: register (`rs2`) or immediate? |
-| `MemRead` | Is this a load? |
-| `MemWrite` | Is this a store? |
-| `ResultSrc` | Write-back value comes from: ALU result, memory data, or `PC+4` (for `jal`)? |
-| `Branch` | Is this a conditional branch (feeds PC-update logic)? |
-| `Jump` | Is this `jal` (unconditional PC change)? |
+| Signal | Purpose | Specifics |
+| --- | --- | --- |
+| `RegWrite` | Write-back specification | `0`: No WB, `1`: WB |
+| `ALUSrc` | ALU's 2nd operand: register (`rs2`) or immediate | `0`: Register input, `1`:Second input for the ALU from immediate generator |
+| `MemRead` | For instructions that read from memory(lw,lb etc) | `0`: No need to read, `1`: Read from memory |
+| `MemWrite` | For instructions that store data in memory(sw etc) | `0`: No write, `1`: Write to memory |
+| `ResultSrc` | Write-back value comes from: ALU result, memory data, or `PC+4` (for `jal`)? | 2bit datatype. `00`: ALU result, `01`: Memory data, `10`: PC + 4 |
+| `Branch` | Branch signal for PC updating | `0`: No branch, `1`: Branch |
+| `Jump` | Is this `jal` (unconditional PC change)? | `0`: Do not jump, `1`: Jump |
+
+### Design decisions  
+
+1.
